@@ -4,8 +4,14 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
 const mongoose = require('mongoose')
+const crypto = require('crypto');
 
-var indexRouter = require('./routes/index');
+const passport = require('passport');
+const local = require('./authStrategies/local.js');
+const session = require('express-session');
+
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth')
 
 require("dotenv").config();
 
@@ -25,7 +31,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const sessionSecret = crypto.randomBytes(64).toString('hex');
+
+app.use(
+  session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 },
+  }),
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
+app.use('/', authRouter)
 
 const PORT = process.env.PORT || 3000;
 
