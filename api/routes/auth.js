@@ -17,7 +17,7 @@ router.post(
           password: hashedPassword,
         });
 
-        const result = await user.save();
+        await user.save();
         res.json(user)
       }
     });
