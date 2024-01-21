@@ -12,13 +12,24 @@ exports.createConversation = asyncHandler(async(req, res, next) => {
 
         res.json(conversation)
     } catch(err){
-        res.status(500)
-        console.log(err)
+        res.status(500).json({error: err})
+        
     }
 })
 
 exports.getSingleConversation = asyncHandler(async(req, res, next) => {
-    res.json('')
+    try{
+        const conversation = await Conversation.findById(req.params.conversationId);
+
+        if (!conversation) {
+            return res.status(404).json({ error: 'Conversation not found' });
+        }
+
+        res.json(conversation)
+    }catch(err){
+        res.status(500).json({error: err})
+        
+    }
 })
 
 exports.getAllConversations = asyncHandler(async(req, res, next) => {
