@@ -13,16 +13,18 @@ const ensureAuthenticated = (req, res, next) => {
 };
 
 
-/*
-need to map out routes better.
-Remaining Routes:
-  -searchbar for users to start convo with
-  -get conversations that a person has
-  -get messages in a single conversation
-*/
 
-router.post('/conversations', ensureAuthenticated, convController.createConversation)
+router.post('/user/:userId/conversations', ensureAuthenticated, convController.createConversation)
 
-router.post('/conversations/:conversationId', ensureAuthenticated, messageController.createMessage)
+router.get('/user/:userId/conversations/:conversationId', ensureAuthenticated, convController.getSingleConversation)
+
+router.get('/user/:userId', ensureAuthenticated, convController.getAllConversations)
+
+router.post('/user/:userId/conversations/:conversationId/message', ensureAuthenticated, messageController.createMessage)
+
+//searchbar
+router.get('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
+  res.json('')
+}))
 
 module.exports = router;
