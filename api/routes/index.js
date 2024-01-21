@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const asyncHandler = require('express-async-handler')
 
 const convController = require('../controllers/conversationController')
 const messageController = require('../controllers/messageController')
+
+const User = require('../models/user')
 
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -18,13 +21,23 @@ router.post('/user/:userId/conversations', ensureAuthenticated, convController.c
 
 router.get('/user/:userId/conversations/:conversationId', ensureAuthenticated, convController.getSingleConversation)
 
-router.get('/user/:userId', ensureAuthenticated, convController.getAllConversations)
+router.get('/user/:userId/conversations', ensureAuthenticated, convController.getAllConversations)
 
 router.post('/user/:userId/conversations/:conversationId/message', ensureAuthenticated, messageController.createMessage)
 
-//searchbar
 router.get('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
-  res.json('')
+  try{
+     const searchedUsers = await User.find({ username: { $regex: `^${req.body.searchQuery}`, $options: 'i' } });
+
+      if (!searchedUsers) {
+        return res.status(404).json({ error: 'No Users Found' });
+    }
+
+    res.json(searchedUsers)
+  } catch(err){
+    console.log(err)
+    res.status(500).json({error: 'Server Error.'})
+  }
 }))
 
 module.exports = router;
