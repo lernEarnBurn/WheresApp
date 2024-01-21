@@ -33,5 +33,12 @@ exports.getSingleConversation = asyncHandler(async(req, res, next) => {
 })
 
 exports.getAllConversations = asyncHandler(async(req, res, next) => {
-    res.json('')
+    try {
+        const conversations = await Conversation.find({ users: req.params.userId });
+
+        res.json(conversations);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 })
