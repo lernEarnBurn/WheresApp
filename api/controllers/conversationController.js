@@ -12,8 +12,8 @@ exports.createConversation = asyncHandler(async(req, res, next) => {
 
         res.json(conversation)
     } catch(err){
-        res.status(500).json({error: err})
-        
+        console.log(err)
+        res.status(500).json({error: 'Server Error.'})
     }
 })
 
@@ -27,8 +27,8 @@ exports.getSingleConversation = asyncHandler(async(req, res, next) => {
 
         res.json(conversation)
     }catch(err){
-        res.status(500).json({error: err})
-        
+        console.log(err)
+        res.status(500).json({error: 'Server Error.'})        
     }
 })
 
