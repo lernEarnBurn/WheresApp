@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler')
 
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('image');
+
+
+
 const convController = require('../controllers/conversationController')
 const messageController = require('../controllers/messageController')
 
@@ -16,15 +22,16 @@ const ensureAuthenticated = (req, res, next) => {
 };
 
 
-
 router.post('/user/:userId/conversations', ensureAuthenticated, convController.createConversation)
 
 router.get('/user/:userId/conversations/:conversationId', ensureAuthenticated, convController.getSingleConversation)
 
 router.get('/user/:userId/conversations', ensureAuthenticated, convController.getAllConversations)
 
-//make it work without auth first
-router.post('/user/:userId/conversations/:conversationId/message', messageController.createMessage)
+router.post('/user/:userId/conversations/:conversationId/message/image', upload, messageController.createMessageImage)
+
+router.post('/user/:userId/conversations/:conversationId/message/text', messageController.createMessageText)
+
 
 router.get('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
   try{
