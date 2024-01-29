@@ -8,7 +8,6 @@ const crypto = require('crypto');
 
 const passport = require('passport');
 const local = require('./authStrategies/local.js');
-const session = require('express-session');
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth')
@@ -24,28 +23,22 @@ async function main() {
 
 const app = express();
 
-app.use(cors());
+const corsOptions = { origin: 'http://localhost:5173',  credentials: true }
+
+app.use(cors(corsOptions));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const sessionSecret = crypto.randomBytes(64).toString('hex');
 
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 },
-  }),
-);
 app.use(passport.initialize());
-app.use(passport.session());
 
-app.use('/', indexRouter);
 app.use('/', authRouter)
+app.use('/', indexRouter);
+
 
 const PORT = process.env.PORT || 3000;
 

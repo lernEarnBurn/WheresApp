@@ -1,23 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler')
+const jwt = require('jsonwebtoken')
 
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single('image');
-
-
 
 const convController = require('../controllers/conversationController')
 const messageController = require('../controllers/messageController')
 
 const User = require('../models/user')
 
+require('dotenv').config()
+
 const ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  const authHeader = req.header('Authorization');
+  
+  const [bearer, token] = authHeader.split(' ');
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized - Missing Token' });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    req.user = decoded.user;
+
     return next();
-  } else {
-    return res.status(401).json({ message: 'Unauthorized' });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ message: 'Unauthorized - Invalid Token' });
   }
 };
 
@@ -28,9 +39,9 @@ router.get('/user/:userId/conversations/:conversationId', ensureAuthenticated, c
 
 router.get('/user/:userId/conversations', ensureAuthenticated, convController.getAllConversations)
 
-router.post('/user/:userId/conversations/:conversationId/message/image', upload, messageController.createMessageImage)
+router.post('/user/:userId/conversations/:conversationId/message/image', ensureAuthenticated, upload, messageController.createMessageImage)
 
-router.post('/user/:userId/conversations/:conversationId/message/text', messageController.createMessageText)
+router.post('/user/:userId/conversations/:conversationId/message/text', ensureAuthenticated, messageController.createMessageText)
 
 
 router.get('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {

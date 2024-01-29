@@ -2,9 +2,13 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 
 const User = require('../models/user')
+
+require("dotenv").config();
+
 
 router.post(
   '/sign-up', asyncHandler(async (req, res, next) => {
@@ -24,21 +28,16 @@ router.post(
   })
 )
 
-router.post('/log-in', passport.authenticate('local'), (req, res) => {
+router.post('/log-in', passport.authenticate('local', {session: false}), (req, res) => {
   if (req.isAuthenticated()) {
-    return res.json({ success: true, user: req.user });
+    const token = jwt.sign({ user: req.user }, process.env.SECRET, {expiresIn: '4h'}, { algorithm: "HS256" });
+    return res.json({ success: true, user: req.user, token: token });
   } else {
     return res.status(401).json({ success: false, message: 'Authentication failed' });
   }
 });
 
-router.get('/log-out', (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.json('Logged Out');
-  });
-});
+
+
 
 module.exports = router;
