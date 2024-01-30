@@ -5,5 +5,28 @@
 body {
   margin: 0;
   padding: 0;
-  
+}
+
+.logo-bg {
+  background-image: url('/images/loginbg.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+label {
+  color: #e6e6e6;
+}
+
+button {
+  background-color: #5e50fb;
+  color: white;
+  border-radius: 1vh;
+  padding: 1vh 1vh;
+  font-size: larger;
+}
+
+input {
+  padding: 1vh 1vh;
+  border-radius: 1vh;
 }
