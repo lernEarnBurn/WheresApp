@@ -22,7 +22,10 @@ router.post(
         });
 
         await user.save();
-        res.json(user)
+      
+        const token = jwt.sign({ user: req.user }, process.env.SECRET, {expiresIn: '4h'}, { algorithm: "HS256" });
+        return res.json({ success: true, user: req.user, token: token });
+        
       }
     });
   })
