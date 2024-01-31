@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useNavigate } from 'react-router-dom'
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 import axios from 'axios'
 
-export function Login(){
+export function Signup(){
   const buttonVariants = {
     rest: { scale: 1 },
     hover: { scale: 1.03},
@@ -23,9 +23,9 @@ export function Login(){
   }
 
   async function submitDetails(){
-    if(usernameValue.trim() != '' && passwordValue.trim() != ''){
+    if(usernameValue.trim() !== '' && passwordValue.trim() !== ''){
       try{
-        const response = await axios.post('http://localhost:3000/log-in',
+        const response = await axios.post('http://localhost:3000/sign-up',
                                       {username: usernameValue, password: passwordValue}
                                     )
 
@@ -61,7 +61,7 @@ export function Login(){
         </div>
         <div className="flex flex-col">
           <label name="password">Password</label>
-          <input onChange={handlePasswordChange} type="password" placeholder="password" id="password" />          
+          <input onChange={handlePasswordChange} type="password" placeholder="password" id="password"/>          
         </div>
         <motion.button
           onClick={submitDetails}
@@ -74,8 +74,8 @@ export function Login(){
           Submit
         </motion.button>
         <div className="flex gap-1 text-sm justify-center mt-[-.75vh]">
-          <p className="font-bol">Click here to</p>
-          <a className="font-bold" onClick={() => {navigate('/WheresApp/Signup')}}>Signup</a>
+          <p>Click here to</p>
+          <a className="font-bold" onClick={() => {navigate('/WheresApp/Login')}}>Login</a>
         </div>
       </div>
     </section>
