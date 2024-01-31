@@ -23,8 +23,8 @@ router.post(
 
         await user.save();
       
-        const token = jwt.sign({ user: req.user }, process.env.SECRET, {expiresIn: '4h'}, { algorithm: "HS256" });
-        return res.json({ success: true, user: req.user, token: token });
+        const token = jwt.sign({ user: user }, process.env.SECRET, {expiresIn: '4h'}, { algorithm: "HS256" });
+        return res.json({ success: true, user: user, token: token });
         
       }
     });
