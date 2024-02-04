@@ -34,8 +34,7 @@ exports.getSingleConversation = asyncHandler(async(req, res, next) => {
 
 exports.getAllConversations = asyncHandler(async(req, res, next) => {
     try {
-        const conversations = await Conversation.find({ users: req.params.userId }).populate('lastMessage');
-
+        const conversations = await Conversation.find({ users: req.params.userId }).populate('lastMessage').populate('users');
         res.json(conversations);
     } catch (err) {
         console.error(err);
