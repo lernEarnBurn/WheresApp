@@ -9,7 +9,6 @@ export function ConvColumn(){
   //need to have the person who's not u in conversation's name added tp the data object
   //backend issue
 
-  //also need to populate lastMessage
 
   return (
     <section className='w-[30%] h-full flex flex-col'>  
@@ -18,7 +17,7 @@ export function ConvColumn(){
       <div className="w-full h-[82%] flex flex-col overflow-y-scroll">
         {conversations.map((conv, index) => (
           <div key={index} className="w-full h-[15%] bg-red-200">
-            <h1>{conv.users}</h1>
+            <h1>{conv.users[0].username}</h1>
             <h2>{conv.lastMessage}</h2>
           </div>
         ))}
@@ -40,6 +39,12 @@ function useGetConversations(){
                                               'Authorization': `Bearer ${localStorage.getItem('token')}`
                                             }
                                           })
+
+        response.data.forEach((conv) => {
+          if(conv.users[0]._id === JSON.parse(localStorage.getItem('user'))._id){
+            conv.users[0] = conv.users[1]
+          }
+        })
         setConversations(response.data)
       } catch (err){
         console.log(err)
