@@ -56,9 +56,13 @@ exports.createMessageText = asyncHandler(async(req, res, next) => {
 
         await Conversation.findByIdAndUpdate(
             req.params.conversationId,
-            { $push: { messages: message._id } },
+            {
+              $push: { messages: message._id },
+              lastMessage: message._id, 
+            },
             { new: true }
-        );
+          );
+          
 
         await message.save();
         res.json(message);
