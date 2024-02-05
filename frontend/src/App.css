@@ -59,3 +59,20 @@ input {
   border: 1px solid #ff0000;
   animation: shake 0.5s ease-in-out; 
 }
+
+.search-bar {
+  background-color: #bab4fd8b;
+  padding-left: 2.5vw;
+  font-size:large;
+}
+
+.svg {
+  position: absolute;
+  background-image: url('/images/search.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: 101px;
+  left: 52px;
+  width: 1.4vw;
+  height: 3vh;
+}
