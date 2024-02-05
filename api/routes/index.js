@@ -44,7 +44,7 @@ router.post('/user/:userId/conversations/:conversationId/message/image', ensureA
 router.post('/user/:userId/conversations/:conversationId/message/text', ensureAuthenticated, messageController.createMessageText)
 
 
-router.get('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
+router.post('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
   try{
      const searchedUsers = await User.find({ username: { $regex: `^${req.body.searchQuery}`, $options: 'i' } });
 
