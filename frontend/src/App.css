@@ -76,3 +76,14 @@ input {
   width: 1.4vw;
   height: 3vh;
 }
+
+.default-pic {
+  background-image: url('/images/stockAvatar.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.hover-bg:hover {
+  background-color: #bab4fd48;
+}
