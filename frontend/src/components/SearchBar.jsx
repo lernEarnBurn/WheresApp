@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react"
 
 import axios from 'axios'
+import PropTypes from 'prop-types'
 
-export function SearchBar(){
+SearchBar.propTypes = {
+  addContacts: PropTypes.func.isRequired,
+  backToConvDisplay: PropTypes.func.isRequired
+};
+
+export function SearchBar(props){
   const [searchVal, setSearchVal] = useState('')
 
   const handleSearchChange = (event) => {
@@ -13,16 +19,21 @@ export function SearchBar(){
   useEffect(() => {
     const handleSearch = async() => {
       console.log(searchVal)
-      const searchResponse = await axios.post('http://localhost:3000/user',
-      {
-        searchQuery: searchVal
-      },
-       {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      if(searchVal !== ''){
+        const searchResponse = await axios.post('http://localhost:3000/user',
+        {
+          searchQuery: searchVal
         },
-      })
-      console.log(searchResponse)
+         {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+        })
+        console.log(searchResponse)
+        props.addContacts(searchResponse.data)
+      }else{
+        props.backToConvDisplay()
+      }
     }
     handleSearch()
 
