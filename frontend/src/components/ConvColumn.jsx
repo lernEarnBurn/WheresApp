@@ -1,9 +1,33 @@
 import { useState, useEffect } from "react"
 import { SearchBar } from "./SearchBar"
+import { motion } from 'framer-motion'
 
 import axios from 'axios'
 
-export function ConvColumn(){
+import PropTypes from 'prop-types'
+import Buffer from 'buffer'
+
+ConvColumn.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired, 
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    profilePic: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      image: PropTypes.shape({
+        data: PropTypes.instanceOf(Buffer).isRequired,
+        contentType: PropTypes.string.isRequired,
+      }),
+    }),
+  }),
+  logOutFunc: PropTypes.func.isRequired,
+  displaySettings: PropTypes.func.isRequired
+}
+
+
+export function ConvColumn(props){
   const { conversations } = useGetConversations()
   
   const [displayConvs, setDisplayConvs] = useState(true)
@@ -18,14 +42,40 @@ export function ConvColumn(){
     setDisplayConvs(true)
   }
 
+
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.1},
+  };
+
   return (
-    <section className='w-[30%] h-full flex flex-col'>  
-      <div className="w-full h-[10%]"></div>
+    <motion.section  className='overflow-hidden w-full h-full flex flex-col '>  
+      <div className="w-full h-[10%] py-2 px-5 flex justify-between items-center">
+        {!props.user.profilePic ? (
+            <div onClick={props.displaySettings} className="w-14 h-14 default-pic flex-shrink-0"></div>
+        ) : (
+            <div onClick={props.displaySettings} className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+              <img
+                src={props.user.profilePic}
+                alt={`${localStorage.getItem('user').username}'s profile`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+        )}
+        <motion.button
+            onClick={props.logOutFunc}
+            className="h-10 text-sm font-semibold"
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="rest" 
+            initial="rest"
+          >Log Out</motion.button>
+      </div>
       <SearchBar addContacts={addContacts} backToConvDisplay={backToConvDisplay}/>
       <div className="w-full h-[82%] flex flex-col overflow-y-scroll">
         {displayConvs ? (
           conversations.map((conv, index) => (
-            <div key={index} className="w-full h-[15%] border-b py-4 px-3 border-gray-300 flex items-center gap-3 hover-bg">
+            <div key={index} className="w-full h-[15%] border-b py-3 px-3 border-gray-300 flex items-center gap-3 hover-bg">
               {conv.users[0].profilePic ? (
                 <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                   <img
@@ -71,7 +121,7 @@ export function ConvColumn(){
           )
         )}
       </div>
-    </section>
+    </motion.section>
   )}
   
 
