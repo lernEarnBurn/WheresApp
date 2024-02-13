@@ -67,12 +67,12 @@ input {
 }
 
 .svg {
-  position: absolute;
+  position: relative;
   background-image: url('/images/search.svg');
   background-repeat: no-repeat;
   background-size: contain;
-  top: 101px;
-  left: 52px;
+  top: -26.5px;
+  left: -173px;
   width: 1.4vw;
   height: 3vh;
 }

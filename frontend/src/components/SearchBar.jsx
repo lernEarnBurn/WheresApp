@@ -15,7 +15,6 @@ export function SearchBar(props){
     setSearchVal(event.target.value)
   }
 
-  //need to figure out how im gonna display search results
   useEffect(() => {
     const handleSearch = async() => {
       console.log(searchVal)
@@ -41,8 +40,8 @@ export function SearchBar(props){
 
   return (
     <section className="w-full h-[8%] grid place-items-center  border-gray-300 border-b border-t">
-      <input onChange={handleSearchChange} type="text" className="search-bar h-8 w-[90%] rounded-2xl"></input>
-      <svg className="svg"></svg>
+      <input onChange={handleSearchChange} type="text" className="mt-[.65rem] search-bar h-8 w-[90%] rounded-2xl"></input>
+      <div className="svg"></div>
     </section>
   )
 }
