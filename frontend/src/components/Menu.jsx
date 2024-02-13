@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 export function Menu(){
   const navigate = useNavigate()
   
-  const [user] = useState(localStorage.getItem('user'))
+  const [user] = useState(JSON.parse(localStorage.getItem('user')))
   const [showUserSettings, setShowUserSettings] = useState(false)
 
   const displaySettings = () => {setShowUserSettings(true)}
@@ -21,6 +21,7 @@ export function Menu(){
   function logOut(){
     localStorage.removeItem('token')
     localStorage.removeItem('user')
+    localStorage.removeItem('conversations')
     navigate('/WheresApp/Login')
   }
 
@@ -35,17 +36,12 @@ export function Menu(){
             {showUserSettings ? (
               <UserSettings key="userSettings" removeDisplaySettings={removeDisplaySettings}/>
             ) : (
-              // Even though ConvColumn doesn't have an exit animation, it needs to be wrapped for AnimatePresence to work correctly.
-              // You can simply use a motion.div with no animation properties for ConvColumn to satisfy AnimatePresence's requirements.
               <motion.div key="convColumn" exit={{}} className='w-full h-full'>
                 <ConvColumn logOutFunc={logOut} user={user} displaySettings={displaySettings}/>
               </motion.div>
             )}
           </AnimatePresence>
           </div>
-         
-        
-       
 
           <ConvInterface />
         </section>

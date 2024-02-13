@@ -28,7 +28,7 @@ ConvColumn.propTypes = {
 
 
 export function ConvColumn(props){
-  const { conversations } = useGetConversations()
+  const { conversations } = useGetConversations(props.user)
   
   const [displayConvs, setDisplayConvs] = useState(true)
   const [contacts, setContacts] = useState([])
@@ -57,7 +57,7 @@ export function ConvColumn(props){
             <div onClick={props.displaySettings} className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
               <img
                 src={props.user.profilePic}
-                alt={`${localStorage.getItem('user').username}'s profile`}
+                alt={`${props.user.username}'s profile`}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -125,30 +125,42 @@ export function ConvColumn(props){
   )}
   
 
-function useGetConversations(){
-  const [conversations, setConversations] = useState([])
+function useGetConversations(user){
+  const [conversations, setConversations] = useState(() => {
+    const storedConversations = localStorage.getItem('conversations');
+    try {
+      return storedConversations ? JSON.parse(storedConversations) : [];
+    } catch (error) {
+      console.error("Error parsing conversations from localStorage:", error);
+      return [];
+    }
+  });
+  
 
   useEffect(() => {
     const convRequest = async() => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/${JSON.parse(localStorage.getItem('user'))._id}/conversations`, {
+        const response = await axios.get(`http://localhost:3000/user/${user._id}/conversations`, {
                                             headers: {
                                               'Authorization': `Bearer ${localStorage.getItem('token')}`
                                             }
                                           })
 
         response.data.forEach((conv) => {
-          if(conv.users[0]._id === JSON.parse(localStorage.getItem('user'))._id){
+          if(conv.users[0]._id === user._id){
             conv.users[0] = conv.users[1]
           }
         })
         setConversations(response.data)
+        localStorage.setItem('conversations', JSON.stringify(response.data));
+        
       } catch (err){
         console.log(err)
       }
     }
-
-    convRequest()
+    if(!localStorage.getItem('conversations')){
+      convRequest()
+    }
   }, [])
 
   return { conversations }
