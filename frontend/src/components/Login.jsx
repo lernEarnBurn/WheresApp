@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import {motion} from 'framer-motion'
 import axios from 'axios'
 
+import { Loader2 } from "lucide-react/dist/cjs/lucide-react"
+
 export function Login(){
   const buttonVariants = {
     rest: { scale: 1 },
@@ -10,6 +12,8 @@ export function Login(){
   };
 
   const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(false)
 
   const [usernameValue, setUsernameValue] = useState('')
   const [passwordValue, setPasswordValue] = useState('')
@@ -27,6 +31,7 @@ export function Login(){
 
   async function submitDetails(){
     if(usernameValue.trim() != '' && passwordValue.trim() != ''){
+      setLoading(true)
       setTriggerLoginAnim(true)
       try{
         const response = await axios.post('http://localhost:3000/log-in',
@@ -35,7 +40,7 @@ export function Login(){
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         
-
+        setLoading(false)
         navigate('/WheresApp/Menu')
       }catch(err){
         console.log(err)
@@ -73,16 +78,22 @@ export function Login(){
             <label name="password">Password</label>
             <input onChange={handlePasswordChange} type="password" placeholder="password" id="password" />          
           </div>
-          <motion.button
-            onClick={submitDetails}
-            className="mt-2"
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="rest" 
-            initial="rest"
-          >
-            Submit
-          </motion.button>
+          {!loading ? (
+              <motion.button
+                onClick={submitDetails}
+                className="mt-2"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="rest" 
+                initial="rest"
+              >
+                Submit
+              </motion.button>
+            ) : (
+              <button disabled className="mt-2 grid place-items-center py-3">
+                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              </button>
+            )}
           <div className="flex gap-1 text-sm justify-center mt-[-.75vh]">
             <p>Click here to</p>
             <a className="font-bold" onClick={() => {navigate('/WheresApp/Signup')}}>Signup</a>
