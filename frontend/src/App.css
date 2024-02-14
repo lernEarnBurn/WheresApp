@@ -87,3 +87,16 @@ input {
 .hover-bg:hover {
   background-color: #bab4fd48;
 }
+
+.bg-color {
+  background-color: #867cf5d8;
+}
+
+.fg-color {
+  color: #867cf5d8;
+
+}
+
+.user-input-bg {
+  background-color: #bab4fd48;
+}
