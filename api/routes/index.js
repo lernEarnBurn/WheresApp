@@ -9,8 +9,8 @@ const upload = multer({ storage: storage }).single('image');
 
 const convController = require('../controllers/conversationController')
 const messageController = require('../controllers/messageController')
+const userController = require('../controllers/userController')
 
-const User = require('../models/user')
 
 require('dotenv').config()
 
@@ -43,20 +43,13 @@ router.post('/user/:userId/conversations/:conversationId/message/image', ensureA
 
 router.post('/user/:userId/conversations/:conversationId/message/text', ensureAuthenticated, messageController.createMessageText)
 
+router.post('/user', ensureAuthenticated, userController.searchBar)
 
-router.post('/user', ensureAuthenticated, asyncHandler(async(req, res, next) => {
-  try{
-     const searchedUsers = await User.find({ username: { $regex: `^${req.body.searchQuery}`, $options: 'i' } });
+router.post('/user/:userId/username', ensureAuthenticated, userController.editUsername)
 
-      if (!searchedUsers) {
-        return res.status(404).json({ error: 'No Users Found' });
-    }
+router.post('/user/:userId/description', ensureAuthenticated, userController.editDescription)
 
-    res.json(searchedUsers)
-  } catch(err){
-    console.log(err)
-    res.status(500).json({error: 'Server Error.'})
-  }
-}))
+router.post('/user/:userId/profilePic', ensureAuthenticated, userController.setProfilePic)
+
 
 module.exports = router;
