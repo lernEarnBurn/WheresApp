@@ -34,7 +34,7 @@ export function Menu(){
           <div className='relative  w-[30%] h-full'>
           <AnimatePresence>
             {showUserSettings ? (
-              <UserSettings key="userSettings" removeDisplaySettings={removeDisplaySettings}/>
+              <UserSettings user={user} key="userSettings" removeDisplaySettings={removeDisplaySettings}/>
             ) : (
               <motion.div key="convColumn" exit={{}} className='w-full h-full'>
                 <ConvColumn logOutFunc={logOut} user={user} displaySettings={displaySettings}/>
