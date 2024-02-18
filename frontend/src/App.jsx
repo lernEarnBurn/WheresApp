@@ -7,12 +7,6 @@ import { Signup } from "./components/Signup";
 import { useEffect, useState } from "react";
 
 function App() {
-  /*
-    gonna be a single page with 3 components
-    -the conversationn column wiht searchbar on top (may make search bar its own component)
-    -the right side of screen where each conversation will be displayed and 
-    -in top left corner above search bar it will toggle the conversation column to user settings
-  */
   const location = useLocation()
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
