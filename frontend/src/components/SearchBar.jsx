@@ -17,7 +17,6 @@ export function SearchBar(props){
 
   useEffect(() => {
     const handleSearch = async() => {
-      console.log(searchVal)
       if(searchVal !== ''){
         const searchResponse = await axios.post('http://localhost:3000/user',
         {
@@ -28,7 +27,6 @@ export function SearchBar(props){
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
         })
-        console.log(searchResponse)
         props.addContacts(searchResponse.data)
       }else{
         props.backToConvDisplay()
