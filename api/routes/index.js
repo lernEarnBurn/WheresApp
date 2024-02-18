@@ -49,7 +49,9 @@ router.post('/user/:userId/username', ensureAuthenticated, userController.editUs
 
 router.post('/user/:userId/description', ensureAuthenticated, userController.editDescription)
 
-router.post('/user/:userId/profilePic', ensureAuthenticated, userController.setProfilePic)
+router.post('/user/:userId/profilePic', ensureAuthenticated, upload, userController.setProfilePic)
+
+router.get('/user/:userId/profilePic/:picId', ensureAuthenticated, upload, userController.getProfilePic)
 
 
 module.exports = router;
