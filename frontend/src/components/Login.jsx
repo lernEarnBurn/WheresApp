@@ -39,7 +39,7 @@ export function Login(){
                                     )
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        
+           
         setLoading(false)
         navigate('/WheresApp/Menu')
       }catch(err){
@@ -66,7 +66,7 @@ export function Login(){
       {triggerLoginAnim ? ( <motion.section
           animate={{ y: 0 }} 
           exit={{ y: -1000 }} 
-          transition={{ duration: 0.3 }} 
+          transition={{ duration: 0.4 }} 
           className="logo-bg h-[100vh] w-[100vw] grid place-items-center">
           
         <div className="flex flex-col gap-3 w-[16vw]">
