@@ -106,7 +106,7 @@ export function ConvColumn(props){
   
                 <div className="flex flex-col mb-3 mt-1">
                   <h1 className="text-lg font-semibold">{contact.username}</h1>
-                  <h2 className="text-gray-600 text-sm max-h-[2.6em] mr-2 overflow-hidden">flex-shrink-0flex-shrink-0 flex-shrink-0 flex-shrink-0 flex-shrink-0 flex-shrink-0 flex-shrink-0 flex-shrink-0</h2>
+                  <h2 className="text-gray-600 text-sm max-h-[2.6em] mr-2 overflow-hidden">{contact.description}</h2>
                 </div>
               </div>
             ))
