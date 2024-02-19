@@ -89,7 +89,7 @@ exports.setProfilePic = asyncHandler(async(req, res, next) => {
     }
 
     await image.save()
-    res.json(image._id)
+    res.json(image)
 
   } catch(err){
     console.log(err)

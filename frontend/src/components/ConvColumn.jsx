@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import axios from 'axios'
 
 import PropTypes from 'prop-types'
-import Buffer from 'buffer'
 
 ConvColumn.propTypes = {
   user: PropTypes.shape({
@@ -13,22 +12,17 @@ ConvColumn.propTypes = {
     username: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    profilePic: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      image: PropTypes.shape({
-        data: PropTypes.instanceOf(Buffer).isRequired,
-        contentType: PropTypes.string.isRequired,
-      }),
-    }),
+    profilePic: PropTypes.string.isRequired,
   }),
   logOutFunc: PropTypes.func.isRequired,
-  displaySettings: PropTypes.func.isRequired
+  displaySettings: PropTypes.func.isRequired,
+  profilePic: PropTypes.string
 }
 
 
 export function ConvColumn(props){
   const { conversations } = useGetConversations(props.user)
+  
   
   const [displayConvs, setDisplayConvs] = useState(true)
   const [contacts, setContacts] = useState([])
@@ -51,12 +45,12 @@ export function ConvColumn(props){
   return (
     <motion.section  className='overflow-hidden w-full h-full flex flex-col '>  
       <div className="w-full h-[10%] py-2 px-5 flex justify-between items-center">
-        {!props.user.profilePic ? (
+        {!props.profilePic ? (
             <div onClick={props.displaySettings} className="w-14 h-14 default-pic flex-shrink-0"></div>
         ) : (
             <div onClick={props.displaySettings} className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
               <img
-                src={props.user.profilePic}
+                src={props.profilePic}
                 alt={`${props.user.username}'s profile`}
                 className="w-full h-full object-cover"
               />
@@ -166,3 +160,4 @@ function useGetConversations(user){
   return { conversations }
 
 }
+

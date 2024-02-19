@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 
 import { Loader2 } from 'lucide-react'
 import { ArrowLeft } from 'lucide-react';
 
-import Buffer from 'buffer'
 
 UserSettings.propTypes = {
   removeDisplaySettings: PropTypes.func.isRequired,
@@ -15,16 +14,13 @@ UserSettings.propTypes = {
     username: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    profilePic: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      image: PropTypes.shape({
-        data: PropTypes.instanceOf(Buffer).isRequired,
-        contentType: PropTypes.string.isRequired,
-      }),
-    }),
+    profilePic: PropTypes.string.isRequired,
   }),
+  profilePic: PropTypes.string.isRequired,
+  setProfilePic: PropTypes.func.isRequired,
+
 };
+
 
 export function UserSettings(props) {
   const [username, setUsername] = useState(props.user.username);
@@ -45,25 +41,43 @@ export function UserSettings(props) {
 
   const [loading, setLoading] = useState(false)
 
-  //weird async behavior is making me do this
+
   async function saveChanges() {
-    
-    if (username !== props.user.username && description !== props.user.description) {
-      setLoading(true)
-      await editUsername(props.user, username)
-      await editDescription(props.user, description)
+    setLoading(true);
+  
+    if (username !== props.user.username) {
+      await editUsername(props.user, username);
+    }
+    if (description !== props.user.description) {
+      await editDescription(props.user, description);
+    }
+    if (selectedFile) {
+      await uploadProfilePic(props.setProfilePic, props.user, selectedFile); 
+      setSelectedFile(null);
+    }
+  
+    setLoading(false);
+  }
 
-    } else if (username !== props.user.username && description === props.user.description) {
-      setLoading(true)
-      await editUsername(props.user, username)
+  const fileInputRef = useRef(null) 
+  const [profilePicUrl, setProfilePicUrl] = useState(props.profilePic ? props.profilePic : 'public/images/stockAvatar.png');
+  const [selectedFile, setSelectedFile] = useState(null)
 
-    }else if(description !== props.user.description && username === props.user.username){
-      setLoading(true)
-      await editDescription(props.user, description)
+  const handleProfilePicClick = () => {
+    fileInputRef.current.click();
+  }
+
+  const handleProfilePicChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      return;
     }
 
-    setLoading(false)
-  }
+    const url = URL.createObjectURL(file);
+    setProfilePicUrl(url);
+    setSelectedFile(file)
+    
+  };
 
   return (
     <motion.section initial={{ x: -700 }} animate={{ x: 0 }} exit={{ x: -700 }} transition={{ duration: .3 }} className='w-full h-full flex flex-col overflow-hidden'>
@@ -72,18 +86,12 @@ export function UserSettings(props) {
         <h1 className='text-white text-2xl mt-20 ml-5'>Profile</h1>
       </div>
       <div className="w-full h-[82%] flex flex-col items-center">
-        {props.user.profilePic ? (
-          <div className="my-1 w-56 h-56 rounded-full overflow-hidden flex-shrink-0">
-            {/* The original code to display profilePic might need adjustment based on how profilePic is structured */}
-            <img
-              src={props.user.profilePic}
-              alt={`${props.user.username}'s profile`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ) : (
-          <div className="my-1 w-56 h-56 default-pic flex-shrink-0"></div>
-        )}
+
+      <div className="my-4 w-[12.5rem] h-[12.5rem] rounded-full overflow-hidden flex-shrink-0 cursor-pointer" onClick={handleProfilePicClick}>
+        <img src={profilePicUrl} alt="Profile" className="w-full h-full object-cover"></img>
+      </div>
+
+        <input type="file" ref={fileInputRef} onChange={handleProfilePicChange} style={{ display: 'none' }} />
         <div className='w-full h-[6.5rem] user-input-bg mb-8'>
           <h2 className='py-2 px-7 fg-color text-lg font-medium'>Username</h2>
           <input spellCheck="false" value={username} onChange={handleUsernameChange} className='user-input-bg fg-color text-md w-[25.75vw] ml-6' type="text" />
@@ -144,6 +152,7 @@ function locallyEditDescription(user, description){
   localStorage.setItem('user', JSON.stringify(user))
 }
 
+
 async function editDescription(user, description){
   try {
     const response = await axios.post(
@@ -160,5 +169,47 @@ async function editDescription(user, description){
     console.log(response); 
   } catch (err) {
     console.log(err);
+  }
+}
+
+function locallyEditProfilePic(user, image){  
+  if(image) {
+    const updatedUser = { ...user, profilePic: image._id };
+    localStorage.setItem('user', JSON.stringify(updatedUser)); 
+  }
+
+}
+
+
+async function uploadProfilePic(setProfilePic, user, image){
+  try {
+    
+    const formData = new FormData();
+    formData.append('image', image);
+
+    const token = localStorage.getItem('token');
+
+    const response = await axios.post(
+      `http://localhost:3000/user/${user._id}/profilePic`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`,
+        },
+      }).then((response) => {
+      locallyEditProfilePic( user, response.data)
+      if(response.data){
+        const picUrl = URL.createObjectURL(image)
+        setProfilePic(picUrl)
+        localStorage.setItem('profilePicUrl', picUrl); 
+  
+      }
+    })
+
+    
+
+  } catch (err) {
+    console.error(err);
   }
 }
