@@ -5,7 +5,7 @@ const Image = require('../models/image')
 
 exports.searchBar = asyncHandler(async(req, res, next) => {
   try{
-     const searchedUsers = await User.find({ username: { $regex: `^${req.body.searchQuery}`, $options: 'i' } });
+     const searchedUsers = await User.find({ username: { $regex: `^${req.body.searchQuery}`, $options: 'i' } }).populate('profilePic');
 
       if (!searchedUsers) {
         return res.status(404).json({ error: 'No Users Found' });

@@ -27,6 +27,16 @@ export function SearchBar(props){
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
         })
+
+        searchResponse.data.forEach((contact) => {
+          if(contact.profilePic){
+            const uintArray = new Uint8Array(contact.profilePic.image.data.data);
+            const blob = new Blob([uintArray], { type: 'image/jpeg' });
+            const picUrl = URL.createObjectURL(blob)
+            contact.profilePic = picUrl
+          }
+        })
+
         props.addContacts(searchResponse.data)
       }else{
         props.backToConvDisplay()
