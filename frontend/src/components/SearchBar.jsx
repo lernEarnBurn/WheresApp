@@ -48,7 +48,7 @@ export function SearchBar(props){
 
   return (
     <section className="w-full h-[8%] grid place-items-center  border-gray-300 border-b border-t">
-      <input onChange={handleSearchChange} type="text" className="mt-[.65rem] search-bar h-8 w-[90%] rounded-2xl"></input>
+      <input onChange={handleSearchChange} type="text" className="mt-[.65rem] search-bar pt-1 h-8 w-[90%] rounded-2xl"></input>
       <div className="svg"></div>
     </section>
   )
