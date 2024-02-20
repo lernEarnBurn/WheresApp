@@ -66,6 +66,11 @@ input {
   font-size:large;
 }
 
+.text-bar {
+  background-color: #bab4fd8b;
+  font-size:large;
+}
+
 .svg {
   position: relative;
   background-image: url('/images/search.svg');
