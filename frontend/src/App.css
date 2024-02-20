@@ -105,3 +105,41 @@ input {
 .user-input-bg {
   background-color: #bab4fd48;
 }
+
+
+.message {
+  position: relative;
+  max-width: 40%;
+  margin-bottom: 12px;
+  padding: .75rem;
+  border-radius: 8px;
+  background-color: #867cf5;
+  align-self: flex-end;
+}
+
+.message::after {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  right: 2px; 
+  width: 0;
+  height: 0;
+  border: 8px solid transparent; 
+  border-top-color:   #867cf5; 
+  border-bottom: 0;
+  margin-left: -5px;
+  margin-bottom: -10px;
+}
+
+
+.message.received {
+  background-color: #fff; 
+  align-self: flex-start;
+}
+
+.message.received::after {
+  right: auto;
+  left: 7px; 
+  bottom: 4.5px;
+  border-top-color: #fff; 
+}
