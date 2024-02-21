@@ -4,15 +4,25 @@ import { SmilePlus } from 'lucide-react';
 import { MoreVertical } from 'lucide-react';
 
 import { motion } from 'framer-motion'
+import { useContext, useEffect } from 'react';
 
-//i think the conversation obj is gonna be in a context that when click on contact or current conv then
-//it will populate context with what it needs and that will display everything on this screen
+import { ConvContext } from '../contexts/ConvContext';
+
 
 export function ConvInterface(){
+  const { recipient, messages, status } = useContext(ConvContext)
+
   const buttonVariants = {
     rest: { scale: 1 },
     hover: { scale: 1.1},
   };
+
+
+  useEffect(() => {
+    console.log(`Recipient: ${JSON.stringify(recipient)}`)
+    console.log(`Messages: ${JSON.stringify(messages)}`)
+    console.log(`status ${JSON.stringify(status)}`)
+  }, [recipient, messages, status])
   
   return (
     <section className='w-[70%] h-full'>
@@ -35,7 +45,7 @@ export function ConvInterface(){
       <div className="w-full h-[10%] flex items-center gap-4 border border-l-0 border-gray-300">
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='ml-4 rounded-full'><Image/></motion.button>
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SmilePlus/></motion.button>
-        <input className="w-[80%] h-[5.5vh] text-bar rounded-lg px-4" type="text" />
+        <input className="w-[80%] h-[5.5vh] text-bar rounded-lg px-4" type="text" placeholder='Type a Message...'/>
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SendHorizontal/></motion.button>
       </div>
     </section>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-
 import axios from 'axios'
+
+import { ConvProvider } from '../contexts/ConvContext'
 
 import { ConvColumn } from './ConvColumn'
 import { ConvInterface } from './ConvInterface'
@@ -32,22 +33,23 @@ export function Menu(){
 
   return (
       <div className="overflow-hidden logo-bg h-[100vh] w-[100vw] grid place-items-center">
-        <section className='overflow-hidden w-[97vw] h-[95vh] bg-white flex '>
-          
-          <div className='relative  w-[30%] h-full'>
-          <AnimatePresence>
-            {showUserSettings ? (
-              <UserSettings setProfilePic={setProfilePic} profilePic={profilePic} user={user} key="userSettings" removeDisplaySettings={removeDisplaySettings}/>
-            ) : (
-              <motion.div key="convColumn" exit={{}} className='w-full h-full'>
-                <ConvColumn profilePic={profilePic} logOutFunc={logOut} user={user} displaySettings={displaySettings}/>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          </div>
+        <ConvProvider>
+          <section className='overflow-hidden w-[97vw] h-[95vh] bg-white flex '>
+            <div className='relative  w-[30%] h-full'>
+            <AnimatePresence>
+              {showUserSettings ? (
+                <UserSettings setProfilePic={setProfilePic} profilePic={profilePic} user={user} key="userSettings" removeDisplaySettings={removeDisplaySettings}/>
+              ) : (
+                <motion.div key="convColumn" exit={{}} className='w-full h-full'>
+                  <ConvColumn profilePic={profilePic} logOutFunc={logOut} user={user} displaySettings={displaySettings}/>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            </div>
 
-          <ConvInterface />
-        </section>
+            <ConvInterface />
+          </section>
+        </ConvProvider>
       </div>
   )
 }

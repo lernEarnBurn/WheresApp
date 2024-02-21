@@ -17,6 +17,7 @@ exports.createConversation = asyncHandler(async(req, res, next) => {
     }
 })
 
+//may not need
 exports.getSingleConversation = asyncHandler(async(req, res, next) => {
     try{
         const conversation = await Conversation.findById(req.params.conversationId);
@@ -34,7 +35,7 @@ exports.getSingleConversation = asyncHandler(async(req, res, next) => {
 
 exports.getAllConversations = asyncHandler(async(req, res, next) => {
     try {
-        const conversations = await Conversation.find({ users: req.params.userId }).populate('lastMessage').populate({
+        const conversations = await Conversation.find({ users: req.params.userId }).populate('lastMessage').populate('messages').populate({
             path: 'users',
             populate: {
                 path: 'profilePic',

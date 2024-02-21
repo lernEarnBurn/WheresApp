@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { SearchBar } from "./SearchBar"
 import { motion } from 'framer-motion'
-
 import axios from 'axios'
 
 import PropTypes from 'prop-types'
+
+import { ConvContext } from "../contexts/ConvContext"
 
 ConvColumn.propTypes = {
   user: PropTypes.shape({
@@ -21,8 +22,17 @@ ConvColumn.propTypes = {
 
 
 export function ConvColumn(props){
+  const { setRecipient, setMessages, setStatus } = useContext(ConvContext)
+
+  const setConvContext = (newRecipient, newStatus, newMessages) => {
+    setRecipient(newRecipient)
+    if(newStatus === 'exist'){
+      setMessages(newMessages)
+    }
+    setStatus(newStatus)
+  }
+
   const { conversations } = useGetConversations(props.user)
-  
   
   const [displayConvs, setDisplayConvs] = useState(true)
   const [contacts, setContacts] = useState([])
@@ -69,7 +79,7 @@ export function ConvColumn(props){
       <div className="w-full h-[82%] flex flex-col overflow-y-scroll">
         {displayConvs ? (
           conversations.map((conv, index) => (
-            <div key={index} className="w-full h-[15%] border-b py-3 px-3 border-gray-300 flex items-center gap-3 hover-bg">
+            <div onClick={() => setConvContext(conv.users[0], 'exist', conv.messages)} key={index} className="w-full h-[15%] border-b py-3 px-3 border-gray-300 flex items-center gap-3 hover-bg">
               {conv.users[0].profilePic ? (
                 <div className="w-14 h-14 mx-1 rounded-full overflow-hidden flex-shrink-0">
                   <img
@@ -91,7 +101,7 @@ export function ConvColumn(props){
         ) : (
           contacts.length > 0 ? (
             contacts.map((contact, index) => (
-              <div key={index} className="w-full h-[15%] border-b py-4 px-3 border-gray-300 flex items-center gap-3 hover-bg">
+              <div onClick={() => { setConvContext(contact, 'new', [])} } key={index} className="w-full h-[15%] border-b py-4 px-3 border-gray-300 flex items-center gap-3 hover-bg">
                 {contact.profilePic ? (
                   <div className="w-14 h-14 mx-1 rounded-full overflow-hidden flex-shrink-0">
                     <img
