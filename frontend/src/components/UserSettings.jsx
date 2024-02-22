@@ -69,7 +69,10 @@ export function UserSettings(props) {
 
   const handleProfilePicChange = async (event) => {
     const file = event.target.files[0];
-    if (!file) {
+    const maxSize = 1 * 1024 * 1024
+    
+    if (!file || file.size > maxSize) {
+      console.log('file is too large.')
       return;
     }
 
