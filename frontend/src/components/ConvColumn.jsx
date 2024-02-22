@@ -13,7 +13,7 @@ ConvColumn.propTypes = {
     username: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    profilePic: PropTypes.string.isRequired,
+    profilePic: PropTypes.string
   }),
   logOutFunc: PropTypes.func.isRequired,
   displaySettings: PropTypes.func.isRequired,
@@ -28,6 +28,8 @@ export function ConvColumn(props){
     setRecipient(newRecipient)
     if(newStatus === 'exist'){
       setMessages(newMessages)
+    }else{
+      setMessages([])
     }
     setStatus(newStatus)
   }
