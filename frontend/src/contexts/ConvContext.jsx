@@ -6,7 +6,9 @@ export const ConvContext = createContext({
   messages: [],
   setMessages: () => {},
   status: '',
-  setStatus: () => {}
+  setStatus: () => {},
+  convId: '',
+  setConvId: () => {}
   
 })
 
@@ -16,9 +18,10 @@ export const ConvProvider = ({ children }) => {
   const [recipient, setRecipient] = useState([]);
   const [messages, setMessages] = useState([])
   const [status, setStatus] = useState('')
+  const [convId, setConvId] = useState('')
 
   return (
-    <ConvContext.Provider value={{ recipient, messages, setRecipient, setMessages, status, setStatus }}>
+    <ConvContext.Provider value={{ recipient, messages, setRecipient, setMessages, status, setStatus, convId, setConvId }}>
       {children}
     </ConvContext.Provider>
   );

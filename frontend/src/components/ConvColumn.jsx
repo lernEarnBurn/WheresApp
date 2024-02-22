@@ -22,13 +22,16 @@ ConvColumn.propTypes = {
 
 
 export function ConvColumn(props){
-  const { setRecipient, setMessages, setStatus } = useContext(ConvContext)
+  const { setRecipient, setMessages, setStatus, setConvId } = useContext(ConvContext)
 
-  const setConvContext = (newRecipient, newStatus, newMessages) => {
-    setRecipient(newRecipient)
+  const setConvContext = (obj, newStatus) => {
+    
     if(newStatus === 'exist'){
-      setMessages(newMessages)
+      setRecipient(obj.users[0])
+      setMessages(obj.messages)
+      setConvId(obj._id)
     }else{
+      setRecipient(obj)
       setMessages([])
     }
     setStatus(newStatus)
@@ -81,7 +84,7 @@ export function ConvColumn(props){
       <div className="w-full h-[82%] flex flex-col overflow-y-scroll">
         {displayConvs ? (
           conversations.map((conv, index) => (
-            <div onClick={() => setConvContext(conv.users[0], 'exist', conv.messages)} key={index} className="w-full h-[15%] border-b py-3 px-3 border-gray-300 flex items-center gap-3 hover-bg">
+            <div onClick={() => setConvContext(conv, 'exist')} key={index} className="w-full h-[15%] border-b py-3 px-3 border-gray-300 flex items-center gap-3 hover-bg">
               {conv.users[0].profilePic ? (
                 <div className="w-14 h-14 mx-1 rounded-full overflow-hidden flex-shrink-0">
                   <img
@@ -103,7 +106,7 @@ export function ConvColumn(props){
         ) : (
           contacts.length > 0 ? (
             contacts.map((contact, index) => (
-              <div onClick={() => { setConvContext(contact, 'new', [])} } key={index} className="w-full h-[15%] border-b py-4 px-3 border-gray-300 flex items-center gap-3 hover-bg">
+              <div onClick={() => { setConvContext(contact, 'new')} } key={index} className="w-full h-[15%] border-b py-4 px-3 border-gray-300 flex items-center gap-3 hover-bg">
                 {contact.profilePic ? (
                   <div className="w-14 h-14 mx-1 rounded-full overflow-hidden flex-shrink-0">
                     <img
