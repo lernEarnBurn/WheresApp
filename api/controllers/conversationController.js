@@ -2,6 +2,8 @@ const asyncHandler = require('express-async-handler')
 
 const Conversation = require('../models/conversation')
 
+const Mongoose = require('mongoose')
+
 exports.createConversation = asyncHandler(async(req, res, next) => {
     try{
         const conversation = new Conversation({
@@ -35,13 +37,24 @@ exports.getSingleConversation = asyncHandler(async(req, res, next) => {
 
 exports.getAllConversations = asyncHandler(async(req, res, next) => {
     try {
-        const conversations = await Conversation.find({ users: req.params.userId }).populate('lastMessage').populate('messages').populate({
-            path: 'users',
-            populate: {
-                path: 'profilePic',
-                model: 'Image'  
+        const conversations = await Conversation.find({ users: req.params.userId })
+                                                        .populate('lastMessage')
+                                                        .populate('messages')
+                                                        .populate({
+                                                          path: 'users',
+                                                          populate: {
+                                                            path: 'profilePic',
+                                                            model: 'Image'
+                                                          }
+                                                        });
+
+        for (let conversation of conversations) {
+          for (let message of conversation.messages) {
+            if (message.content.type === 'image') { 
+              message.content = await Image.findById(message.content);
             }
-        });
+          }
+        }
         res.json(conversations);
     } catch (err) {
         console.error(err);
