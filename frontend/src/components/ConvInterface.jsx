@@ -4,13 +4,26 @@ import { SmilePlus } from 'lucide-react';
 import { MoreVertical } from 'lucide-react';
 
 import { motion } from 'framer-motion'
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios'
+
+import PropTypes from 'prop-types'
 
 import { ConvContext } from '../contexts/ConvContext';
 
 
-export function ConvInterface(){
-  const { recipient, messages, status } = useContext(ConvContext)
+ConvInterface.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired, 
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    profilePic: PropTypes.string
+  }),
+}
+
+export function ConvInterface(props){
+  const { recipient, messages, status, setStatus, convId } = useContext(ConvContext)
 
 
 
@@ -18,6 +31,59 @@ export function ConvInterface(){
     rest: { scale: 1 },
     hover: { scale: 1.1},
   };
+
+  const [inputValue, setInputValue] = useState('')
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value)
+  }
+
+  //make a new message appear smoothly with animation as well as loading for send button
+  async function sendMessageText(){
+    if(status === 'exist'){
+      try{
+        const newMessage = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${convId}/message/text`, 
+        { content: inputValue },
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+
+        messages.push(newMessage.data)
+        setInputValue('')
+      } catch(err){
+        console.log(err)
+      }
+    }else{
+      try{
+        //when create a conv need to get it into the conv list as well as fill in all data on the convcolumn page as
+        //well as on the conv interface.
+        const newConversation = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations`,
+        { recipient: recipient._id },
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+
+        const newMessage = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${newConversation.data._id}/message/text`, 
+        { content: inputValue },
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+
+        messages.push(newMessage.data)
+        setInputValue('')
+        setStatus('exist')
+
+      } catch(err){
+        console.log(err)
+      }
+    }
+  }
 
 
   useEffect(() => {
@@ -75,8 +141,8 @@ export function ConvInterface(){
       <div className="w-full h-[10%] flex items-center gap-4 border border-l-0 border-gray-300">
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='ml-4 rounded-full'><Image/></motion.button>
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SmilePlus/></motion.button>
-        <input className="w-[80%] h-[5.5vh] text-bar rounded-lg px-4" type="text" placeholder='Type a Message...'/>
-        <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SendHorizontal/></motion.button>
+        <input value={inputValue} onChange={handleInputChange} className="w-[80%] h-[5.5vh] text-bar rounded-lg px-4" type="text" placeholder='Type a Message...'/>
+        <motion.button onClick={sendMessageText} variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SendHorizontal/></motion.button>
       </div>
     </section>
   )

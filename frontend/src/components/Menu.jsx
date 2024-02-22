@@ -47,7 +47,7 @@ export function Menu(){
             </AnimatePresence>
             </div>
 
-            <ConvInterface />
+            <ConvInterface user={user} />
           </section>
         </ConvProvider>
       </div>
