@@ -11,8 +11,20 @@ exports.createConversation = asyncHandler(async(req, res, next) => {
         })
 
         await conversation.save()
+        const populatedConversation = await Conversation.findById(conversation._id).populate('users').populate({
+            path: 'users',
+            populate: {
+              path: 'profilePic',
+              model: 'Image'
+            }
+          });
 
-        res.json(conversation)
+        populatedConversation.users[0] = populatedConversation.users[1]
+
+
+        res.json(populatedConversation);
+
+
     } catch(err){
         console.log(err)
         res.status(500).json({error: 'Server Error.'})

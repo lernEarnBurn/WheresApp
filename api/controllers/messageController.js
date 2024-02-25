@@ -5,6 +5,7 @@ const Conversation = require('../models/conversation')
 const Image = require('../models/image')
 
 exports.createMessageImage = asyncHandler(async (req, res, next) => {
+    //need to do image sending
     try {
         const image = new Image({
             name: req.file.originalname,
@@ -37,7 +38,7 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
                 lastMessage: 'image' 
             },
             { new: true }
-        )        
+        ).populate('users').populate('lastMessage').populate('messages')        
 
         
     } catch (err) {

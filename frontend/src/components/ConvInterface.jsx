@@ -39,74 +39,39 @@ export function ConvInterface(props){
   }
 
   //make a new message appear smoothly with animation as well as loading for send button
-  async function sendMessageText(){
-    if(status === 'exist'){
-      try{
-        const response = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${convId}/message/text`, 
-        { content: inputValue },
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
+  async function sendMessageText() {
+    try {
+        let conversationId = convId; 
 
-       
+        if (status !== 'exist') {
+            const newConversationResponse = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations`, {
+                recipient: recipient._id,
+                lastMessage: inputValue,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
-        let conversations = JSON.parse(localStorage.getItem('conversations'));
-        if (Array.isArray(conversations)) {
-            const index = conversations.findIndex(conv => conv._id === response.data.conversation._id);
+            conversationId = newConversationResponse.data._id;
 
-            const profilePic = conversations[index].users[0].profilePic
-
-            if (index !== -1) {
-                conversations[index] = response.data.conversation;
-                conversations[index].users[0].profilePic = profilePic
-                conversations[index].messages.push(response.data.message)
-                messages.push(response.data.message)
-            }
-            
-          
-            const updatedConversations = JSON.stringify(conversations);
-
-            localStorage.setItem('conversations', updatedConversations);
+            updateLocalStorageWithNewConversation(newConversationResponse.data);
+            setStatus('exist'); 
         }
-        setInputValue('')
-      } catch(err){
-        console.log(err)
-      }
-    }else{
-      try{
-        //when create a conv need to get it into the conv list as well as fill in all data on the convcolumn page as
-        //well as on the conv interface.
-        const newConversation = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations`,
-        { 
-          recipient: recipient._id,
-          lastMessage: inputValue
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
 
-        const newMessage = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${newConversation.data._id}/message/text`, 
-        { content: inputValue },
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
+        const messageResponse = await sendMessageToConversation(conversationId, inputValue, props);
 
-        messages.push(newMessage.data)
-        setInputValue('')
-        setStatus('exist')
+        updateUIAndLocalStorageWithNewMessage(conversationId, messageResponse.data.message, messages);
 
-      } catch(err){
-        console.log(err)
-      }
+        setInputValue('');
+    } catch (err) {
+        console.log(err);
     }
   }
 
+  
+
+      
   return (
     <section className='w-[70%] h-full'>
       <div className="w-full h-[9%] flex gap-3 items-center border-x border-gray-300">
@@ -160,4 +125,40 @@ export function ConvInterface(props){
       </div>
     </section>
   )
+}
+
+async function sendMessageToConversation(conversationId, content, props) {
+  return await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${conversationId}/message/text`, {
+      content: content,
+  }, {
+      headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+  });
+}
+
+function updateLocalStorageWithNewConversation(newConversation) {
+  let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+
+
+  conversations.push(newConversation);
+  localStorage.setItem('conversations', JSON.stringify(conversations));
+}
+
+function updateUIAndLocalStorageWithNewMessage(conversationId, newMessage, messages) {
+  let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+  const index = conversations.findIndex(conv => conv._id === conversationId);
+
+  if (index !== -1) {
+      const profilePic = conversations[index].users[0].profilePic;
+      conversations[index].lastMessage = newMessage.content.text; 
+      conversations[index].messages.push(newMessage);
+
+      if (profilePic) {
+          conversations[index].users[0].profilePic = profilePic;
+      }
+
+      localStorage.setItem('conversations', JSON.stringify(conversations));
+      messages.push(newMessage); 
+  }
 }
