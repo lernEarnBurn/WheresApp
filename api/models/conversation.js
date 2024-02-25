@@ -13,7 +13,7 @@ const conversationSchema = new Schema({
   }],
 
   messages: [{type: Schema.Types.ObjectId, ref: "Message"}],
-  lastMessage: {type: Schema.Types.ObjectId, ref: "Message", default: null}
+  lastMessage: {type: String, default: null}
 })
 
 module.exports = mongoose.model("Conversation", conversationSchema);

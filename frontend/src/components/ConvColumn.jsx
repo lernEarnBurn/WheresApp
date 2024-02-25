@@ -99,7 +99,8 @@ export function ConvColumn(props){
   
               <div className="flex flex-col overflow-hidden">
                 <h1 className="text-lg font-semibold">{conv.users[0].username}</h1>
-                <h2 className="text-gray-600 pr-2 truncate whitespace-nowrap">{}  This is a dummy last Message </h2>
+                <h2 className="text-gray-600 pr-2 truncate whitespace-nowrap">{conv.lastMessage}</h2>
+
               </div>
             </div>
           ))
@@ -170,7 +171,6 @@ function useGetConversations(user){
         
         localStorage.setItem('conversations', JSON.stringify(response.data));
         setConversations(response.data)
-        console.log(response.data)
         
       } catch (err){
         console.log(err)

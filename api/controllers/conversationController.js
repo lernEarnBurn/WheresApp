@@ -7,7 +7,7 @@ const Mongoose = require('mongoose')
 exports.createConversation = asyncHandler(async(req, res, next) => {
     try{
         const conversation = new Conversation({
-            users: [req.params.userId, req.body.recipient]
+            users: [req.params.userId, req.body.recipient],
         })
 
         await conversation.save()

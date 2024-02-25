@@ -42,7 +42,7 @@ export function ConvInterface(props){
   async function sendMessageText(){
     if(status === 'exist'){
       try{
-        const newMessage = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${convId}/message/text`, 
+        const response = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations/${convId}/message/text`, 
         { content: inputValue },
         {
           headers: {
@@ -50,7 +50,26 @@ export function ConvInterface(props){
           },
         })
 
-        messages.push(newMessage.data)
+       
+
+        let conversations = JSON.parse(localStorage.getItem('conversations'));
+        if (Array.isArray(conversations)) {
+            const index = conversations.findIndex(conv => conv._id === response.data.conversation._id);
+
+            const profilePic = conversations[index].users[0].profilePic
+
+            if (index !== -1) {
+                conversations[index] = response.data.conversation;
+                conversations[index].users[0].profilePic = profilePic
+                conversations[index].messages.push(response.data.message)
+                messages.push(response.data.message)
+            }
+            
+          
+            const updatedConversations = JSON.stringify(conversations);
+
+            localStorage.setItem('conversations', updatedConversations);
+        }
         setInputValue('')
       } catch(err){
         console.log(err)
@@ -60,7 +79,10 @@ export function ConvInterface(props){
         //when create a conv need to get it into the conv list as well as fill in all data on the convcolumn page as
         //well as on the conv interface.
         const newConversation = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations`,
-        { recipient: recipient._id },
+        { 
+          recipient: recipient._id,
+          lastMessage: inputValue
+        },
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -85,14 +107,6 @@ export function ConvInterface(props){
     }
   }
 
-
-  useEffect(() => {
-    
-    console.log(`Recipient: ${JSON.stringify(recipient)}`)
-    console.log(`Messages: ${JSON.stringify(messages)}`)
-    console.log(`status ${JSON.stringify(status)}`)
-  }, [recipient, messages, status])
-  
   return (
     <section className='w-[70%] h-full'>
       <div className="w-full h-[9%] flex gap-3 items-center border-x border-gray-300">

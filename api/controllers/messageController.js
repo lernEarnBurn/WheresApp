@@ -30,9 +30,12 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
         //note: there is a size limit on images of 15mb
         await image.save();
 
-        await Conversation.findByIdAndUpdate(
+        const updatedConversation = await Conversation.findByIdAndUpdate(
             req.params.conversationId,
-            { $push: { messages: message._id } },
+            { 
+                $push: { messages: message._id },
+                lastMessage: 'image' 
+            },
             { new: true }
         )        
 
@@ -54,19 +57,19 @@ exports.createMessageText = asyncHandler(async(req, res, next) => {
             sender: req.params.userId,
         });
 
-        await Conversation.findByIdAndUpdate(
+        const updatedConversation = await Conversation.findByIdAndUpdate(
             req.params.conversationId,
             {
               $push: { messages: message._id },
-              lastMessage: message._id, 
+              lastMessage: req.body.content, 
             },
             { new: true }
-          );
+          ).populate('users').populate('lastMessage').populate('messages')
           
 
         await message.save();
-        res.json(message);
-    
+        res.json({ message: message, conversation: updatedConversation });
+        
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server Error' });
