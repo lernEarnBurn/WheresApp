@@ -152,11 +152,11 @@ export function ConvInterface(props){
       </div>
     </section>
     {picToSendSelected && (
-      <CardContainer className="z-10 inter-var">
-        <CardBody className="bg-gray-50 relative w-auto  group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1]  sm:w-[30rem] h-auto rounded-xl p-6 border  ">
+      <CardContainer>
+        <CardBody className="bg-gray-50 relative w-auto   border-black/[0.1]  sm:w-[30rem] h-auto rounded-xl p-6 border  ">
           <CardItem
             translateZ="50"
-            className="text-xl font-bold text-neutral-600 dark:text-white"
+            className="text-xl font-bold text-neutral-600"
           >
             Send Image
           </CardItem>
@@ -171,7 +171,7 @@ export function ConvInterface(props){
             <CardItem
               translateZ={20}
               as="button"
-              className="px-4 py-3 rounded-xl text-xs font-normal dark:text-white"
+              className="px-4 py-3 rounded-xl text-xs font-normal"
               onClick={() => {setPicToSendSelected(false)}}
             >
               Close
@@ -179,7 +179,7 @@ export function ConvInterface(props){
             <CardItem
               translateZ={20}
               as="button"
-              className="px-4 py-3 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+              className="px-4 py-3 rounded-xl bg-black text-white text-xs font-bold"
             >
               Send
             </CardItem>
