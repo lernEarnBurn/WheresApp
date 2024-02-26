@@ -34,7 +34,7 @@ export function Menu(){
   return (
       <div className="overflow-hidden logo-bg h-[100vh] w-[100vw] grid place-items-center">
         <ConvProvider>
-          <section className='overflow-hidden w-[97vw] h-[95vh] bg-white flex '>
+          <section className='w-[97vw] h-[95vh] bg-white flex '>
             <div className='relative  w-[30%] h-full'>
             <AnimatePresence>
               {showUserSettings ? (
