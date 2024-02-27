@@ -28,7 +28,8 @@ export function ConvInterface(props){
 
   const fileInputRef = useRef(null) 
   const [picToSendSelected, setPicToSendSelected] = useState(false)
-  const [profilePicUrl, setProfilePicUrl] = useState(null)
+  const [picUrl, setPicUrl] = useState(null)
+  const [pic, setPic] = useState(null)
 
   const handleProfilePicClick = () => {
     fileInputRef.current.click();
@@ -45,11 +46,46 @@ export function ConvInterface(props){
     }
 
     const url = URL.createObjectURL(file);
-   
-    setProfilePicUrl(url);
+    
+    setPic(file)
+    setPicUrl(url);
     setPicToSendSelected(true)
     
   };
+
+
+  async function sendMessageImage(){
+    try {
+      let conversationId = convId; 
+
+      if (status !== 'exist') {
+        const newConversationResponse = await axios.post(`http://localhost:3000/user/${props.user._id}/conversations`, {
+            recipient: recipient._id,
+            lastMessage: inputValue,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
+        conversationId = newConversationResponse.data._id;
+
+        updateLocalStorageWithNewConversation(newConversationResponse.data);
+        setStatus('exist'); 
+      }
+
+      const messageResponse = await sendImageToConversation(conversationId, pic, props)
+
+      console.log(messageResponse.data)
+
+      //handle locally
+      setPicToSendSelected(false)
+
+    } catch(err){
+      console.log(err)
+    }
+  }
+
 
   const buttonVariants = {
     rest: { scale: 1 },
@@ -93,8 +129,7 @@ export function ConvInterface(props){
     }
   }
 
-  
-
+ 
       
   return (
     <>
@@ -129,7 +164,12 @@ export function ConvInterface(props){
           if (message.content.type === 'text') {
             messageContent = <div>{message.content.text}</div>;
           } else if (message.content.type === 'image') {
-            messageContent = <div><img src={message.content.image} alt=""/></div>;
+            
+            const uintArray = new Uint8Array(message.content.image.image.data.data);
+            const blob = new Blob([uintArray], { type: 'image/jpeg' });
+            const picUrl = URL.createObjectURL(blob)
+            
+            messageContent = <div><img className='rounded-lg w-[12vw] h-[35vh] object-cover' src={picUrl} alt=""/></div>;
           } else {
             messageContent = <div>Unsupported content type</div>;
           }
@@ -162,7 +202,7 @@ export function ConvInterface(props){
           </CardItem>
           <CardItem translateZ="100" className="w-full mt-4">
             <img
-              src={profilePicUrl}
+              src={picUrl}
               className="z-10 h-[27.7rem] w-full object-cover rounded-xl group-hover/card:shadow-xl"
               alt="thumbnail"
             />
@@ -180,6 +220,7 @@ export function ConvInterface(props){
               translateZ={20}
               as="button"
               className="px-4 py-3 rounded-xl bg-black text-white text-xs font-bold"
+              onClick={sendMessageImage}
             >
               Send
             </CardItem>
@@ -189,6 +230,24 @@ export function ConvInterface(props){
   )}
   </>
   )
+}
+
+async function sendImageToConversation(conversationId, image, props){
+  const formData = new FormData();
+  formData.append('image', image);
+
+  const token = localStorage.getItem('token');
+
+  return await axios.post(
+    `http://localhost:3000/user/${props.user._id}/conversations/${conversationId}/message/image`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  );
 }
 
 async function sendMessageToConversation(conversationId, content, props) {

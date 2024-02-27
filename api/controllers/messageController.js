@@ -2,11 +2,16 @@ const asyncHandler = require('express-async-handler')
 
 const Message = require('../models/message')
 const Conversation = require('../models/conversation')
-const Image = require('../models/image')
+const Image = require('../models/image');
+
 
 exports.createMessageImage = asyncHandler(async (req, res, next) => {
-    //need to do image sending
     try {
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image file provided.' });
+        }
+
         const image = new Image({
             name: req.file.originalname,
             image: {
@@ -15,7 +20,6 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
             },
         });
 
-        
 
         const message = new Message({
             content: {
@@ -25,28 +29,30 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
             sender: req.params.userId,
         });
 
-        //this order is bec weird res bug
-        res.json(message)
-        await message.save();
-        //note: there is a size limit on images of 15mb
-        await image.save();
+
 
         const updatedConversation = await Conversation.findByIdAndUpdate(
             req.params.conversationId,
-            { 
+            {
                 $push: { messages: message._id },
-                lastMessage: 'image' 
+                lastMessage: 'image'
             },
             { new: true }
-        ).populate('users').populate('lastMessage').populate('messages')        
+        ).populate('users').populate('lastMessage').populate('messages');
 
+        if (!updatedConversation) {
+            return res.status(404).json({ error: 'Conversation not found.' });
+        }
         
+        await image.save();
+        await message.save();
+
+        res.json({ message: message, conversation: updatedConversation });
     } catch (err) {
-        console.error(err);
-        res.status(err.status || 500).json({ error: err.error || 'Server Error' });
+        console.error("Error details:", err);
+        res.status(500).json({ error: 'Server Error', details: err.message });
     }
 });
-
 
 exports.createMessageText = asyncHandler(async(req, res, next) => {
     try {

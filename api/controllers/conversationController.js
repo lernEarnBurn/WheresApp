@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
 const Conversation = require('../models/conversation')
+const Image = require('../models/image')
 
 const Mongoose = require('mongoose')
 
@@ -63,7 +64,8 @@ exports.getAllConversations = asyncHandler(async(req, res, next) => {
         for (let conversation of conversations) {
           for (let message of conversation.messages) {
             if (message.content.type === 'image') { 
-              message.content = await Image.findById(message.content);
+              message.content.image = await Image.findById(message.content.image);
+              
             }
           }
         }
