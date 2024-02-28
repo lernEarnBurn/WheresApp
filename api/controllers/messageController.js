@@ -24,7 +24,7 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
         const message = new Message({
             content: {
                 type: 'image',
-                image: image._id,
+                image: image,
             },
             sender: req.params.userId,
         });
@@ -35,7 +35,7 @@ exports.createMessageImage = asyncHandler(async (req, res, next) => {
             req.params.conversationId,
             {
                 $push: { messages: message._id },
-                lastMessage: 'image'
+                lastMessage: 'image',
             },
             { new: true }
         ).populate('users').populate('lastMessage').populate('messages');

@@ -53,7 +53,8 @@ export function ConvInterface(props){
     
   };
 
-
+  //smoothness and loading wiht this as well
+  //also fix the speech bubbles
   async function sendMessageImage(){
     try {
       let conversationId = convId; 
@@ -75,10 +76,11 @@ export function ConvInterface(props){
       }
 
       const messageResponse = await sendImageToConversation(conversationId, pic, props)
+        
+       
 
-      console.log(messageResponse.data)
+      updateUIAndLocalStorageWithNewMessage(conversationId, messageResponse.data.message, messages);
 
-      //handle locally
       setPicToSendSelected(false)
 
     } catch(err){
@@ -115,6 +117,7 @@ export function ConvInterface(props){
 
             conversationId = newConversationResponse.data._id;
 
+            
             updateLocalStorageWithNewConversation(newConversationResponse.data);
             setStatus('exist'); 
         }
@@ -132,6 +135,7 @@ export function ConvInterface(props){
  
       
   return (
+    //scroll conv to bottom or better to have it start scrolled to the bottom
     <>
     <section className='w-[70%] h-full'>
       
@@ -168,7 +172,7 @@ export function ConvInterface(props){
             const uintArray = new Uint8Array(message.content.image.image.data.data);
             const blob = new Blob([uintArray], { type: 'image/jpeg' });
             const picUrl = URL.createObjectURL(blob)
-            
+          
             messageContent = <div><img className='rounded-lg w-[12vw] h-[35vh] object-cover' src={picUrl} alt=""/></div>;
           } else {
             messageContent = <div>Unsupported content type</div>;
@@ -274,13 +278,12 @@ function updateUIAndLocalStorageWithNewMessage(conversationId, newMessage, messa
 
   if (index !== -1) {
       const profilePic = conversations[index].users[0].profilePic;
-      conversations[index].lastMessage = newMessage.content.text; 
+      conversations[index].lastMessage = newMessage.content.text || 'image'; 
       conversations[index].messages.push(newMessage);
 
       if (profilePic) {
           conversations[index].users[0].profilePic = profilePic;
       }
-
       localStorage.setItem('conversations', JSON.stringify(conversations));
       messages.push(newMessage); 
   }
