@@ -2,6 +2,8 @@ import { SendHorizontal } from 'lucide-react';
 import { Image } from 'lucide-react';
 import { SmilePlus } from 'lucide-react';
 import { MoreVertical } from 'lucide-react';
+import { Loader2 } from 'lucide-react'
+
 
 import { motion } from 'framer-motion'
 import { useContext, useRef, useState } from 'react';
@@ -53,10 +55,13 @@ export function ConvInterface(props){
     
   };
 
+  const [loading, setLoading] = useState(false)
+
   //smoothness and loading wiht this as well
   //also fix the speech bubbles
   async function sendMessageImage(){
     try {
+      setLoading(true)
       let conversationId = convId; 
 
       if (status !== 'exist') {
@@ -83,6 +88,8 @@ export function ConvInterface(props){
 
       setPicToSendSelected(false)
 
+      setLoading(false)
+
     } catch(err){
       console.log(err)
     }
@@ -103,6 +110,8 @@ export function ConvInterface(props){
   //make a new message appear smoothly with animation as well as loading for send button
   async function sendMessageText() {
     try {
+        setLoading(true)
+
         let conversationId = convId; 
 
         if (status !== 'exist') {
@@ -127,6 +136,8 @@ export function ConvInterface(props){
         updateUIAndLocalStorageWithNewMessage(conversationId, messageResponse.data.message, messages);
 
         setInputValue('');
+
+        setLoading(false)
     } catch (err) {
         console.log(err);
     }
@@ -192,7 +203,13 @@ export function ConvInterface(props){
         <motion.button variants={buttonVariants} onClick={handleProfilePicClick} whileHover="hover" whileTap="rest"  initial="rest" className='ml-4 rounded-full'><Image/></motion.button>
         <motion.button variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className='rounded-full'><SmilePlus/></motion.button>
         <input value={inputValue} onChange={handleInputChange} className="w-[80%] h-[5.5vh] text-bar rounded-lg px-4" type="text" placeholder='Type a Message...'/>
-        <motion.button onClick={sendMessageText} variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className={`rounded-full ${picToSendSelected ? 'mx-3' : 'none'}`}><SendHorizontal/></motion.button>
+        {!loading ? (
+            <motion.button onClick={sendMessageText} variants={buttonVariants} whileHover="hover" whileTap="rest"  initial="rest" className={`rounded-full ${picToSendSelected ? 'mx-3' : 'none'}`}><SendHorizontal/></motion.button>
+        ):(
+          <button disabled className="rounded-full">
+            <Loader2 className="animate-spin" />
+          </button>
+        )}
       </div>
     </section>
     {picToSendSelected && (
@@ -220,7 +237,8 @@ export function ConvInterface(props){
             >
               Close
             </CardItem>
-            <CardItem
+            {!loading ? (
+              <CardItem
               translateZ={20}
               as="button"
               className="px-4 py-3 rounded-xl bg-black text-white text-xs font-bold"
@@ -228,6 +246,18 @@ export function ConvInterface(props){
             >
               Send
             </CardItem>
+            ):(
+              <CardItem
+              translateZ={20}
+              as="button"
+              disabled
+              className="px-5 py-2 rounded-xl bg-black text-white text-xs font-bold"
+              onClick={sendMessageImage}
+            >
+              <Loader2 className="animate-spin" />
+            </CardItem>
+            )}
+            
           </div>
         </CardBody>
       </CardContainer>
