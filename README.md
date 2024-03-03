@@ -1,6 +1,6 @@
 # WheresApp (React + nodejs)
 ## Note
- Use username:poop password:poop for the main account I used for testing. It's populated with conversations and stuff.
+ Use username: poop password: poop for the main account I used for testing. It's populated with conversations and stuff.
 
 ## Link
  https://lernearnburn.github.io/WheresApp/ 
