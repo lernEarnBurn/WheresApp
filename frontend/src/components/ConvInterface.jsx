@@ -4,9 +4,8 @@ import { SmilePlus } from 'lucide-react';
 import { MoreVertical } from 'lucide-react';
 import { Loader2 } from 'lucide-react'
 
-
 import { motion } from 'framer-motion'
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState, useEffect } from 'react';
 import axios from 'axios'
 
 import PropTypes from 'prop-types'
@@ -57,7 +56,6 @@ export function ConvInterface(props){
 
   const [loading, setLoading] = useState(false)
 
-  //smoothness and loading wiht this as well
   //also fix the speech bubbles
   async function sendMessageImage(){
     try {
@@ -107,7 +105,6 @@ export function ConvInterface(props){
     setInputValue(e.target.value)
   }
 
-  //make a new message appear smoothly with animation as well as loading for send button
   async function sendMessageText() {
     try {
         setLoading(true)
@@ -143,10 +140,15 @@ export function ConvInterface(props){
     }
   }
 
+
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
  
       
   return (
-    //scroll conv to bottom or better to have it start scrolled to the bottom
     <>
     <section className='w-[70%] h-full'>
       
@@ -171,7 +173,7 @@ export function ConvInterface(props){
       </div>
 
 
-      <div className="w-full h-[81%] flex flex-col gap-5 user-input-bg border border-b-0 py-10 px-16 border-gray-300 overflow-y-scroll">
+      <div className="w-full h-[81%] flex flex-col gap-5 user-input-bg border border-b-0 py-3 px-16 border-gray-300 overflow-y-scroll">
         {messages.map((message, index) => {
           const isReceived = message.sender === recipient._id;
 
@@ -195,6 +197,7 @@ export function ConvInterface(props){
             </motion.div>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
 
 
