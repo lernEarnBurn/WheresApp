@@ -124,7 +124,7 @@ input {
   right: 2px; 
   width: 0;
   height: 0;
-  border: 8px solid transparent; 
+  border: 9px solid transparent; 
   border-top-color:   #867cf5; 
   border-bottom: 0;
   margin-left: -5px;
@@ -139,7 +139,7 @@ input {
 
 .message.received::after {
   right: auto;
-  left: 7px; 
-  bottom: 4.5px;
+  left: 7.6px; 
+  bottom: 5.2px;
   border-top-color: #fff; 
 }

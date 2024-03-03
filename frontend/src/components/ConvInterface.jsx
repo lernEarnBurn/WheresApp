@@ -56,7 +56,6 @@ export function ConvInterface(props){
 
   const [loading, setLoading] = useState(false)
 
-  //also fix the speech bubbles
   async function sendMessageImage(){
     try {
       setLoading(true)
