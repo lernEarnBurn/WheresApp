@@ -190,9 +190,9 @@ export function ConvInterface(props){
           }
         
           return (
-            <div key={index} className={`message ${isReceived ? 'received' : ''}`}>
+            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: .4}} key={index} className={`message ${isReceived ? 'received' : ''}`}>
               {messageContent}
-            </div>
+            </motion.div>
           );
         })}
       </div>
