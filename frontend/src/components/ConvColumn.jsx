@@ -5,6 +5,7 @@ import axios from 'axios'
 
 import PropTypes from 'prop-types'
 
+import { convertImageToUrl } from "../funcs/convertImageToUrl"
 import { ConvContext } from "../contexts/ConvContext"
 
 ConvColumn.propTypes = {
@@ -162,10 +163,9 @@ function useGetConversations(user){
           }
 
           if(conv.users[0].profilePic){
-            const uintArray = new Uint8Array(conv.users[0].profilePic.image.data.data);
-            const blob = new Blob([uintArray], { type: 'image/jpeg' });
-            const picUrl = URL.createObjectURL(blob)
+            const picUrl = convertImageToUrl(conv.users[0].profilePic.image.data.data)
             conv.users[0].profilePic = picUrl
+
           }
         })
         
