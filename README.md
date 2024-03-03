@@ -1,6 +1,4 @@
 # WheresApp (React + nodejs)
-## Note
- Use username: poop password: poop for the main account I used for testing. It's populated with conversations and stuff.
 
 ## Link
  https://lernearnburn.github.io/WheresApp/ 
@@ -20,3 +18,7 @@ A React and Node WhatsApp Clone with moderate functionality (contains all basic 
 + Plan Plan Plan and Plan some more, cause you forgot something.
 + Chipping away at a larger project compounds.
 + You make stuff and you will improve.
+
+
+## Note
+ Use username: poop password: poop for the main account I used for testing. It's populated with conversations and stuff.
