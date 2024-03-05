@@ -9,7 +9,7 @@ body {
 }
 
 .logo-bg {
-  background-image: url('/images/loginbg.png');
+  background-image: url("/images/loginbg.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -21,7 +21,6 @@ label {
 
 p {
   color: rgb(36, 36, 36);
-
 }
 
 a {
@@ -44,36 +43,44 @@ input {
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-3px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(3px);
   }
 }
 
 .error {
   border: 1px solid #ff0000;
-  animation: shake 0.5s ease-in-out; 
+  animation: shake 0.5s ease-in-out;
 }
 
 .search-bar {
   background-color: #bab4fd8b;
   padding-left: 2.5vw;
-  font-size:large;
+  font-size: large;
 }
 
 .text-bar {
   background-color: #bab4fd8b;
-  font-size:medium;
+  font-size: medium;
 }
 
 .svg {
   position: relative;
-  background-image: url('/images/search.svg');
+  background-image: url("/images/search.svg");
   background-repeat: no-repeat;
   background-size: contain;
   top: -26.5px;
@@ -83,7 +90,7 @@ input {
 }
 
 .default-pic {
-  background-image: url('/images/stockAvatar.png');
+  background-image: url("/images/stockAvatar.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -99,19 +106,17 @@ input {
 
 .fg-color {
   color: #867cf5d8;
-
 }
 
 .user-input-bg {
   background-color: #bab4fd48;
 }
 
-
 .message {
   position: relative;
   max-width: 40%;
   margin-bottom: 12px;
-  padding: .75rem;
+  padding: 0.75rem;
   border-radius: 8px;
   background-color: #867cf5;
   align-self: flex-end;
@@ -121,25 +126,24 @@ input {
   content: "";
   position: absolute;
   bottom: 5px;
-  right: 2px; 
+  right: 2px;
   width: 0;
   height: 0;
-  border: 9px solid transparent; 
-  border-top-color:   #867cf5; 
+  border: 9px solid transparent;
+  border-top-color: #867cf5;
   border-bottom: 0;
   margin-left: -5px;
   margin-bottom: -10px;
 }
 
-
 .message.received {
-  background-color: #fff; 
+  background-color: #fff;
   align-self: flex-start;
 }
 
 .message.received::after {
   right: auto;
-  left: 7.6px; 
+  left: 7.6px;
   bottom: 5.2px;
-  border-top-color: #fff; 
+  border-top-color: #fff;
 }
